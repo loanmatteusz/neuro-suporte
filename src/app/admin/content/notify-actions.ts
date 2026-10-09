@@ -8,6 +8,7 @@ import { fail, ok, type ActionResult } from "@/lib/action-result";
 import { sendMail } from "@/lib/email";
 import { newContentEmail } from "@/lib/email-templates";
 import { env } from "@/lib/env";
+import { errorSummary } from "@/lib/log-safe";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/session";
 
@@ -40,7 +41,7 @@ export async function notifyParticipants(itemId: string): Promise<ActionResult<{
       if (r.status === "fulfilled") sent++;
       else {
         failed++;
-        console.error("[notify] falha no envio", r.reason);
+        console.error("[notify] falha no envio", errorSummary(r.reason));
       }
     }
     if (i + siteConfig.notifyBatchSize < users.length) await new Promise((res) => setTimeout(res, 1000));

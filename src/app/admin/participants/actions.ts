@@ -8,6 +8,7 @@ import { fail, ok, type ActionResult } from "@/lib/action-result";
 import { sendMail } from "@/lib/email";
 import { inviteEmail } from "@/lib/email-templates";
 import { env } from "@/lib/env";
+import { errorSummary } from "@/lib/log-safe";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/session";
 import { fieldErrorsOf, participantInputSchema, type ParticipantInput } from "@/lib/validations";
@@ -27,7 +28,7 @@ async function sendInvite(user: { id: string; name: string; email: string }): Pr
     await prisma.user.update({ where: { id: user.id }, data: { inviteSentAt: new Date() } });
     return true;
   } catch (e) {
-    console.error("[invite] falha no envio", e);
+    console.error("[invite] falha no envio", errorSummary(e));
     return false;
   }
 }
