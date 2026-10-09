@@ -1,0 +1,27 @@
+[x] Task 1: Scaffold, dependências, infra local e testes
+[ ] Task 2: Banco de dados (Prisma 7 + tabelas do Better Auth) e `site.ts`
+[ ] Task 3: Cálculo de progresso
+[ ] Task 4: Helper do YouTube
+[ ] Task 5: Guarda de banco local e arquivo de usuários
+[ ] Task 6: E-mail (SMTP) e templates
+[ ] Task 7: Autenticação, gate de convite e proteção de rotas
+[ ] Task 8: Design system, layout raiz e componentes de marca
+[ ] Task 9: Telas de login (e-mail → código)
+[ ] Task 10: Seed de desenvolvimento
+[ ] Task 11: Dados do curso e home do participante
+[ ] Task 12: Página de conteúdo, conclusão otimista e encorajamento
+[ ] Task 13: Arquivos privados (S3/MinIO/R2)
+[ ] Task 14: Admin — layout e gestão de conteúdo (CRUD)
+[ ] Task 15: Reordenação com drag-and-drop persistida
+[ ] Task 16: "Avisar participantes" sobre conteúdo novo
+[ ] Task 17: Participantes — convites e acompanhamento individual
+[ ] Task 18: Visão geral e edição da apresentação
+[ ] Task 19: Landing, privacidade e conta do participante
+[ ] Task 20: Arquivo de usuários e script de sync
+[ ] Task 21: Deploy, documentação e verificação final
+
+Notas da Task 1
+- Next 16.4 (docs em node_modules/next/dist/docs): `middleware` deprecated -> usar `src/proxy.ts` com `export function proxy`; `after` e estavel em `next/server`; `revalidateTag(tag, profile)` exige 2o argumento (forma de 1 arg deprecated); `next lint` removido (usar `eslint`); params/searchParams/cookies/headers sao assincronos.
+- create-next-app nao aceita nome de pasta iniciando com ponto: scaffold feito em `scaffold-tmp/`.
+- shadcn atual nao tem `--base-color`: init com `-t next -b radix -p nova` (baseColor neutral); Task 8 substitui globals.css.
+- Imagens `minio/minio` e `minio/mc` nao existem mais no Docker Hub: docker-compose usa `chainguard/minio:latest-dev` e `chainguard/minio-client:latest-dev` (MinIO real, mesmo comportamento).
