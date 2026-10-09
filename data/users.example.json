@@ -1,0 +1,5 @@
+[
+  { "email": "loan.matteusz@gmail.com", "name": "Loan", "role": "admin", "active": true },
+  { "email": "maria.exemplo@example.com", "name": "Maria Exemplo", "role": "participant", "active": true },
+  { "email": "joao.exemplo@example.com", "name": "João Exemplo", "role": "participant", "active": false }
+]
