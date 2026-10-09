@@ -7,7 +7,7 @@
 [x] Task 7: Autenticação, gate de convite e proteção de rotas
 [x] Task 8: Design system, layout raiz e componentes de marca
 [x] Task 9: Telas de login (e-mail → código)
-[ ] Task 10: Seed de desenvolvimento
+[x] Task 10: Seed de desenvolvimento
 [ ] Task 11: Dados do curso e home do participante
 [ ] Task 12: Página de conteúdo, conclusão otimista e encorajamento
 [ ] Task 13: Arquivos privados (S3/MinIO/R2)
