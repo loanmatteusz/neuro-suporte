@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import {
-  closestCorners, DndContext, DragOverlay, KeyboardSensor, PointerSensor, TouchSensor,
+  closestCorners, type CollisionDetection, DndContext, DragOverlay, KeyboardSensor, PointerSensor, TouchSensor,
   useDroppable, useSensor, useSensors, type DragEndEvent, type DragOverEvent, type DragStartEvent,
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -17,6 +17,14 @@ const I = (id: string) => `item:${id}`;
 const C = (id: string) => `container:${id}`;
 const raw = (id: string | number) => String(id).split(":")[1];
 const kind = (id: string | number) => String(id).split(":")[0] as "module" | "item" | "container";
+
+const collision: CollisionDetection = (args) => {
+  const wantModule = kind(args.active.id) === "module";
+  return closestCorners({
+    ...args,
+    droppableContainers: args.droppableContainers.filter((c) => (kind(c.id) === "module") === wantModule),
+  });
+};
 
 function Handle({ label, listeners, attributes }: { label: string; listeners?: object; attributes?: object }) {
   return (
@@ -86,22 +94,22 @@ export function SortableTree({ modules: initial }: { modules: TreeModule[] }) {
     const { active, over } = e;
     if (!over || kind(active.id) !== "item") return;
     const itemId = raw(active.id);
-    const from = findModuleOfItem(itemId);
-    const to = kind(over.id) === "item" ? findModuleOfItem(raw(over.id)) : kind(over.id) === "container" ? modules.find((m) => m.id === raw(over.id)) : undefined;
-    if (!from || !to || from.id === to.id) return;
-    setModules((prev) =>
-      prev.map((m) => {
+    setModules((prev) => {
+      const from = prev.find((m) => m.items.some((i) => i.id === itemId));
+      const to = kind(over.id) === "item" ? prev.find((m) => m.items.some((i) => i.id === raw(over.id))) : kind(over.id) === "container" ? prev.find((m) => m.id === raw(over.id)) : undefined;
+      if (!from || !to || from.id === to.id) return prev;
+      const moving = from.items.find((i) => i.id === itemId)!;
+      return prev.map((m) => {
         if (m.id === from.id) return { ...m, items: m.items.filter((i) => i.id !== itemId) };
         if (m.id === to.id) {
-          const moving = from.items.find((i) => i.id === itemId)!;
           const overIndex = kind(over.id) === "item" ? m.items.findIndex((i) => i.id === raw(over.id)) : m.items.length;
           const items = [...m.items];
           items.splice(overIndex < 0 ? items.length : overIndex, 0, moving);
           return { ...m, items };
         }
         return m;
-      }),
-    );
+      });
+    });
   }
 
   function persist(save: () => Promise<{ ok: boolean; error?: string }>, rollback: TreeModule[]) {
@@ -160,12 +168,13 @@ export function SortableTree({ modules: initial }: { modules: TreeModule[] }) {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={collision}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
       onDragCancel={() => {
         if (snapshot) setModules(snapshot);
+        setSnapshot(null);
         setActiveId(null);
       }}
       accessibility={{
