@@ -1,0 +1,12 @@
+"use server";
+
+import { fail, ok, type ActionResult } from "@/lib/action-result";
+import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/session";
+
+export async function deleteMyAccount(): Promise<ActionResult> {
+  const user = await requireUser();
+  if (user.role === "admin") return fail("Contas de administração não podem ser excluídas por aqui.");
+  await prisma.user.delete({ where: { id: user.id } }); // cascade: sessões, contas e progresso
+  return ok();
+}
