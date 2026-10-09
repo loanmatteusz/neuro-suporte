@@ -10,7 +10,7 @@ export function SiteFooter({ psychologistName, crp }: { psychologistName: string
           {psychologistName} · {crp}
         </p>
         <p>
-          <Link href="/privacy" className="underline underline-offset-4 hover:text-ink">
+          <Link href="/privacy" className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-ink">
             Política de privacidade
           </Link>
         </p>
