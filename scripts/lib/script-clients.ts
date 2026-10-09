@@ -13,6 +13,8 @@ export function createScriptS3(): { client: S3Client; bucket: string } {
     region: process.env.S3_REGION,
     forcePathStyle: process.env.S3_FORCE_PATH_STYLE === "true",
     credentials: { accessKeyId: process.env.S3_ACCESS_KEY_ID!, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY! },
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
   });
   return { client, bucket: process.env.S3_BUCKET! };
 }

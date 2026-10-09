@@ -10,6 +10,8 @@ const s3 = new S3Client({
   region: env.S3_REGION,
   forcePathStyle: env.S3_FORCE_PATH_STYLE,
   credentials: { accessKeyId: env.S3_ACCESS_KEY_ID, secretAccessKey: env.S3_SECRET_ACCESS_KEY },
+  requestChecksumCalculation: "WHEN_REQUIRED",
+  responseChecksumValidation: "WHEN_REQUIRED",
 });
 
 export function createUploadUrl(key: string, contentType: string, contentLength: number): Promise<string> {
