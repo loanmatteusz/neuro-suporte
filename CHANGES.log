@@ -5,7 +5,7 @@
 [x] Task 5: Guarda de banco local e arquivo de usuários
 [x] Task 6: E-mail (SMTP) e templates
 [x] Task 7: Autenticação, gate de convite e proteção de rotas
-[ ] Task 8: Design system, layout raiz e componentes de marca
+[x] Task 8: Design system, layout raiz e componentes de marca
 [ ] Task 9: Telas de login (e-mail → código)
 [ ] Task 10: Seed de desenvolvimento
 [ ] Task 11: Dados do curso e home do participante
