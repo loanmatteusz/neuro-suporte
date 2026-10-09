@@ -11,7 +11,7 @@
 [x] Task 11: Dados do curso e home do participante
 [x] Task 12: Página de conteúdo, conclusão otimista e encorajamento
 [x] Task 13: Arquivos privados (S3/MinIO/R2)
-[ ] Task 14: Admin — layout e gestão de conteúdo (CRUD)
+[x] Task 14: Admin — layout e gestão de conteúdo (CRUD)
 [ ] Task 15: Reordenação com drag-and-drop persistida
 [ ] Task 16: "Avisar participantes" sobre conteúdo novo
 [ ] Task 17: Participantes — convites e acompanhamento individual
