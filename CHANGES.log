@@ -9,7 +9,7 @@
 [x] Task 9: Telas de login (e-mail → código)
 [x] Task 10: Seed de desenvolvimento
 [x] Task 11: Dados do curso e home do participante
-[ ] Task 12: Página de conteúdo, conclusão otimista e encorajamento
+[x] Task 12: Página de conteúdo, conclusão otimista e encorajamento
 [ ] Task 13: Arquivos privados (S3/MinIO/R2)
 [ ] Task 14: Admin — layout e gestão de conteúdo (CRUD)
 [ ] Task 15: Reordenação com drag-and-drop persistida
