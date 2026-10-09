@@ -1,5 +1,5 @@
 [x] Task 1: Scaffold, dependências, infra local e testes
-[ ] Task 2: Banco de dados (Prisma 7 + tabelas do Better Auth) e `site.ts`
+[x] Task 2: Banco de dados (Prisma 7 + tabelas do Better Auth) e `site.ts`
 [ ] Task 3: Cálculo de progresso
 [ ] Task 4: Helper do YouTube
 [ ] Task 5: Guarda de banco local e arquivo de usuários

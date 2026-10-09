@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // plugin admin
+  role       String?   @default("participant") // "admin" | "participant"
+  banned     Boolean?  @default(false) // true = acesso desativado
+  banReason  String?
+  banExpires DateTime?
+
+  // Neuro Suporte
+  lastSeenAt        DateTime? // null = convidado e ainda não acessou
+  lastContentItemId String?
+  lastContentItem   ContentItem? @relation("LastContent", fields: [lastContentItemId], references: [id], onDelete: SetNull)
+  inviteSentAt      DateTime?
+
+  sessions Session[]
+  accounts Account[]
+  progress ContentProgress[]
+
+  @@map("user")
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model RateLimit {
+  id          String @id
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+
+  @@map("rateLimit")
+}
+
+model Module {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  position    Int
+  items       ContentItem[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([position])
+  @@map("module")
+}
+
+enum ContentType {
+  VIDEO
+  DOCUMENT
+}
+
+model ContentItem {
+  id         String      @id @default(uuid())
+  moduleId   String
+  module     Module      @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  type       ContentType
+  title      String
+  position   Int
+  body       Json? // documento Tiptap (JSON)
+  youtubeId  String? // VIDEO
+  pdfKey     String? // DOCUMENT
+  pdfName    String?
+  pdfSize    Int?
+  notifiedAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  progress   ContentProgress[]
+  lastSeenBy User[]            @relation("LastContent")
+
+  @@index([moduleId, position])
+  @@map("content_item")
+}
+
+model ContentProgress {
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentItemId String
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  completedAt   DateTime    @default(now())
+
+  @@id([userId, contentItemId])
+  @@index([contentItemId])
+  @@map("content_progress")
+}
+
+model SiteSettings {
+  id               Int      @id @default(1)
+  courseTitle      String
+  courseSubtitle   String
+  aboutCourse      Json // Tiptap
+  audience         Json // "para quem é"
+  learnings        Json // "o que você vai aprender"
+  psychologistName String
+  crp              String
+  bio              Json
+  approach         Json
+  photoKey         String? // foto no bucket (leitura via URL pré-assinada)
+  contactUrl       String
+  updatedAt        DateTime @updatedAt
+
+  @@map("site_settings")
+}
