@@ -63,23 +63,3 @@ export function ItemRow({ item, handle }: { item: TreeModule["items"][number]; h
     </div>
   );
 }
-
-export function ContentTree({ modules }: { modules: TreeModule[] }) {
-  return (
-    <div className="space-y-4">
-      {modules.map((m, i) => (
-        <ModuleCard key={m.id} m={m} index={i}>
-          {m.items.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nenhum conteúdo ainda.</p>
-          ) : (
-            <ol className="space-y-2">
-              {m.items.map((it) => (
-                <li key={it.id}><ItemRow item={it} /></li>
-              ))}
-            </ol>
-          )}
-        </ModuleCard>
-      ))}
-    </div>
-  );
-}

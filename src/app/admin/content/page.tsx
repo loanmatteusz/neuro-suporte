@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Plus } from "lucide-react";
 import { ModuleDialog } from "@/components/admin/module-dialog";
 import { getCourseOutline } from "@/data/course";
-import { ContentTree } from "./_components/content-tree";
+import { SortableTree } from "./_components/sortable-tree";
 
 export const metadata: Metadata = { title: "Conteúdo" };
 
@@ -22,7 +22,7 @@ export default async function AdminContentPage() {
       {outline.length === 0 ? (
         <p className="rounded-card border border-dashed p-8 text-center text-muted-foreground">Comece criando o primeiro módulo do curso.</p>
       ) : (
-        <ContentTree modules={outline} />
+        <SortableTree modules={outline} />
       )}
     </div>
   );
