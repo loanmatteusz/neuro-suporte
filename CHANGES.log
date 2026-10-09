@@ -3,7 +3,7 @@
 [x] Task 3: Cálculo de progresso
 [x] Task 4: Helper do YouTube
 [x] Task 5: Guarda de banco local e arquivo de usuários
-[ ] Task 6: E-mail (SMTP) e templates
+[x] Task 6: E-mail (SMTP) e templates
 [ ] Task 7: Autenticação, gate de convite e proteção de rotas
 [ ] Task 8: Design system, layout raiz e componentes de marca
 [ ] Task 9: Telas de login (e-mail → código)
