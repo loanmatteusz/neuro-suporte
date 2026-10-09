@@ -66,3 +66,20 @@ export function fieldErrorsOf(error: z.ZodError): Record<string, string[]> {
   }
   return out;
 }
+
+const requiredDoc = richTextDocSchema.refine((v) => !isEmptyDoc(v), "Escreva este texto.");
+
+export const settingsInputSchema = z.object({
+  courseTitle: title("Digite o título do curso."),
+  courseSubtitle: z.string().trim().min(1, "Digite o subtítulo.").max(240),
+  aboutCourse: requiredDoc,
+  audience: requiredDoc,
+  learnings: requiredDoc,
+  psychologistName: z.string().trim().min(1, "Digite o seu nome.").max(120),
+  crp: z.string().trim().min(1, "Digite o CRP.").max(40),
+  bio: requiredDoc,
+  approach: requiredDoc,
+  photoKey: z.string().regex(/^images\/[0-9a-f-]{36}\.(jpg|png|webp)$/).nullable(),
+  contactUrl: z.url({ protocol: /^https?$/, message: "Cole um link que comece com https://" }),
+});
+export type SettingsInput = z.input<typeof settingsInputSchema>;

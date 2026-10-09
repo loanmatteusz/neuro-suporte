@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { contentItemInputSchema, moduleInputSchema, participantInputSchema } from "./validations";
+import { contentItemInputSchema, moduleInputSchema, participantInputSchema, settingsInputSchema } from "./validations";
 
 const M = "6f1c2b9e-1d2a-4c3b-9e8f-0a1b2c3d4e5f";
 const doc = (text: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
@@ -48,4 +48,19 @@ describe("contentItemInputSchema", () => {
 
 test("participante normaliza e-mail", () => {
   expect(participantInputSchema.parse({ name: " Ana ", email: " ANA@X.com " })).toEqual({ name: "Ana", email: "ana@x.com" });
+});
+
+describe("settingsInputSchema", () => {
+  const d = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "x" }] }] };
+  const base = {
+    courseTitle: "Neuro Suporte", courseSubtitle: "Sub", aboutCourse: d, audience: d, learnings: d,
+    psychologistName: "Dra. A", crp: "CRP 06/12345", bio: d, approach: d, photoKey: null, contactUrl: "https://wa.me/5511999999999",
+  };
+  test("válido", () => expect(settingsInputSchema.safeParse(base).success).toBe(true));
+  test("link de contato precisa ser http(s)", () => {
+    expect(settingsInputSchema.safeParse({ ...base, contactUrl: "javascript:alert(1)" }).success).toBe(false);
+  });
+  test("foto precisa ser chave de imagem", () => {
+    expect(settingsInputSchema.safeParse({ ...base, photoKey: "pdfs/x.pdf" }).success).toBe(false);
+  });
 });
