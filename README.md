@@ -36,8 +36,8 @@ Plataforma de treinamento online de uma psicóloga para **pais e cuidadores de c
 Pré-requisitos: Node.js, pnpm e Docker.
 
 ```bash
-pnpm install
 cp .env.example .env            # e gere o BETTER_AUTH_SECRET: openssl rand -base64 32
+pnpm install
 docker compose up -d            # Postgres 17 + MinIO (bucket privado criado automaticamente)
 pnpm prisma migrate dev
 pnpm db:seed                    # só roda em banco local
@@ -47,7 +47,7 @@ pnpm test
 
 O `docker compose` sobe três serviços: `postgres`, `minio` e `minio-init` (que cria o bucket privado `neuro-suporte` e termina). As imagens do MinIO são da Chainguard.
 
-Sem `SMTP_*` no `.env`, os códigos de login e os e-mails (convites, avisos) aparecem no terminal onde o `pnpm dev` está rodando, sem enviar nada de verdade.
+Sem `SMTP_*` no `.env`, os códigos de login e os e-mails (convites, avisos) aparecem no terminal onde o `pnpm dev` está rodando, sem enviar nada de verdade. Isso vale só para o `pnpm dev`: o `pnpm start` roda em modo de produção e, sem `SMTP_*`, dá o erro "SMTP não configurado" ao pedir o código.
 
 Logins criados pelo seed: `loan.matteusz@gmail.com` (admin) e `ana.exemplo@example.com`, `bruno.exemplo@example.com`, `carla.exemplo@example.com` (participantes).
 
@@ -97,7 +97,7 @@ Admin inicial: `loan.matteusz@gmail.com`.
 Tudo roda em planos gratuitos: GitHub, Vercel (Hobby), Neon, Cloudflare R2 e Gmail.
 
 1. **GitHub:** criar um repositório privado e fazer `git push`.
-2. **Neon:** criar o projeto (região São Paulo, `sa-east-1`) e copiar a connection string **pooled** para `DATABASE_URL`.
+2. **Neon:** criar o projeto (região São Paulo, `sa-east-1`) e copiar a connection string **pooled** para `DATABASE_URL`. Se o build de produção travar na etapa das migrations, use a connection string direta (não *pooled*) do Neon na `DATABASE_URL` só do build, ou rode `pnpm prisma migrate deploy` do seu computador com ela.
 3. **Cloudflare R2:** criar o bucket privado `neuro-suporte` (sem acesso público). Em *Manage R2 API Tokens*, criar um token "Object Read & Write" só para esse bucket e usar `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY`. Usar também `S3_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com`, `S3_REGION=auto` e `S3_FORCE_PATH_STYLE=false`. Em *Settings → CORS policy* do bucket:
 
    ```json
@@ -105,8 +105,8 @@ Tudo roda em planos gratuitos: GitHub, Vercel (Hobby), Neon, Cloudflare R2 e Gma
    ```
 
 4. **Gmail:** criar uma conta Gmail do projeto, ativar a verificação em 2 etapas e gerar uma senha em *Senhas de app*. Variáveis: `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<conta>`, `SMTP_PASS=<senha de app, sem espaços>` e `EMAIL_FROM="Neuro Suporte <conta@gmail.com>"`. O limite é de ~500 e-mails por dia.
-5. **Vercel:** *Add New Project* → importar o repositório → em *Environment Variables* (escopo Production) cadastrar todas as variáveis, com `BETTER_AUTH_URL=https://<projeto>.vercel.app` → *Deploy*. As migrations rodam sozinhas no build de produção (o script `scripts/migrate-if-production.mjs` só aplica `prisma migrate deploy` quando `VERCEL_ENV=production`; previews e builds locais não tocam o banco).
-6. **Primeiro admin:** no seu computador, `cp .env.example .env.production`, preencher `DATABASE_URL` (Neon), `BETTER_AUTH_URL` e o SMTP, e rodar:
+5. **Vercel:** *Add New Project* → importar o repositório → em *Environment Variables* cadastrar todas as variáveis nos escopos **Production e Preview** (o build precisa delas; sem elas os previews falham), com `BETTER_AUTH_URL=https://<projeto>.vercel.app` → *Deploy*. As migrations rodam sozinhas no build de produção (o script `scripts/migrate-if-production.mjs` só aplica `prisma migrate deploy` quando `VERCEL_ENV=production`; previews e builds locais não tocam o banco).
+6. **Primeiro admin:** no seu computador, crie o `data/users.json` com o admin (copie `data/users.example.json` e deixe só a pessoa certa; sem esse arquivo o sync dá "Não consegui ler data/users.json"). Depois `cp .env.example .env.production`, preencha `DATABASE_URL` (Neon), `BETTER_AUTH_URL` e o SMTP, e rode:
 
    ```bash
    pnpm db:sync-users --env .env.production    # confirme digitando "sim"
@@ -130,20 +130,20 @@ Com um domínio, o envio pode sair de um endereço do próprio projeto (em vez d
 ## Guia rápido para a psicóloga
 
 1. **Entrar:** acesse o site, digite seu e-mail e depois o código de 6 dígitos que chega na sua caixa de entrada.
-2. **Criar um módulo:** no menu **Admin → Conteúdo**, crie o módulo com um título.
+2. **Criar um módulo:** depois de entrar, você cai no **Painel**, com as abas **Visão geral / Conteúdo / Participantes / Apresentação** (quando estiver na área do participante, o botão **Painel** no topo leva de volta). Em **Conteúdo**, clique em **Novo módulo** e dê um título.
 3. **Adicionar conteúdo:** dentro do módulo, clique em **Adicionar conteúdo**:
-   - **Aula:** cole o link do YouTube (de preferência com o vídeo como "Não listado") e confira a prévia que aparece.
+   - **Aula em vídeo:** cole o link do YouTube (de preferência com o vídeo como "Não listado") e confira a prévia que aparece.
    - **Documento:** envie um PDF e/ou escreva o texto.
-4. **Ordenar:** arraste pela alça ⠿ para mudar a ordem de módulos e conteúdos. No celular, segure um instante antes de arrastar.
+4. **Ordenar:** arraste pela alça de arrastar (ícone de pontinhos ao lado do título) para mudar a ordem de módulos e conteúdos. No celular, segure um instante antes de arrastar.
 5. **Conferir:** use **Ver como participante** para ver o conteúdo como os participantes veem.
-6. **Avisar:** quando publicar algo novo, clique em **Avisar participantes**. O e-mail vai só para quem está com acesso ativo, e o conteúdo mostra "Avisado em dd/mm".
+6. **Avisar:** abra a página do conteúdo (clique nele em **Conteúdo**) e clique em **Avisar participantes**. O e-mail vai só para quem está com acesso ativo, e o botão passa a mostrar "Avisado em dd/mm".
 7. **Participantes:**
    - **Convidar participante:** informe nome e e-mail; a pessoa recebe o convite.
    - **Reenviar convite:** para quem não recebeu ou perdeu o e-mail.
    - **Desativar acesso:** pausa o acesso sem perder o progresso (dá para reativar depois).
    - **Excluir:** apaga a pessoa e todo o progresso dela. Não dá para desfazer.
 8. **Visão geral:** mostra as médias de conclusão, quem está sem acessar há 14 dias ou mais e quem foi convidado mas ainda não entrou. Clique em um participante para ver o progresso por módulo.
-9. **Apresentação:** edite sua foto, os textos, o CRP e o link do WhatsApp que aparecem para os participantes.
+9. **Apresentação:** edite sua foto, os textos, o CRP e o **Link de contato** (por exemplo, o do WhatsApp) que aparecem para os participantes.
 
 Os participantes entram do mesmo jeito: só com o e-mail e o código.
 
@@ -152,7 +152,7 @@ Os participantes entram do mesmo jeito: só com o e-mail e o código.
 - Vídeos "não listados" do YouTube podem ser assistidos por qualquer pessoa que tenha o link. A proteção da plataforma vale para o acesso ao curso, não para o vídeo em si.
 - O plano Hobby da Vercel é para uso não comercial. O curso é gratuito (projeto de mestrado), então atende; se um dia for cobrado, será preciso o plano Pro.
 - O Neon suspende o banco quando fica parado: o primeiro acesso depois de um tempo sem uso pode levar cerca de 1 s a mais.
-- O Gmail limita o envio a ~500 e-mails por dia; os avisos são enviados em lotes pequenos por esse motivo.
+- O Gmail limita o envio a ~500 e-mails por dia.
 
 ## Privacidade e ética
 
