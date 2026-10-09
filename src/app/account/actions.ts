@@ -9,7 +9,7 @@ export async function deleteMyAccount(): Promise<ActionResult> {
   if (user.role === "admin") return fail("Contas de administração não podem ser excluídas por aqui.");
   await prisma.$transaction([
     prisma.user.delete({ where: { id: user.id } }), // cascade: sessões, contas e progresso
-    prisma.verification.deleteMany({ where: { identifier: { endsWith: user.email } } }), // OTPs pendentes (LGPD)
+    prisma.verification.deleteMany({ where: { identifier: { in: ["sign-in", "email-verification", "forget-password"].map((t) => `${t}-otp-${user.email.toLowerCase()}`) } } }), // OTPs pendentes (LGPD)
   ]);
   return ok();
 }

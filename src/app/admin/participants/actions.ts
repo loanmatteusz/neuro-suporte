@@ -97,7 +97,7 @@ export async function deleteParticipant(id: string): Promise<ActionResult> {
   if (!user) return fail("Participante não encontrado.");
   await prisma.$transaction([
     prisma.user.delete({ where: { id } }), // cascade: sessões, contas, progresso
-    prisma.verification.deleteMany({ where: { identifier: { endsWith: user.email } } }), // OTPs pendentes (LGPD)
+    prisma.verification.deleteMany({ where: { identifier: { in: ["sign-in", "email-verification", "forget-password"].map((t) => `${t}-otp-${user.email.toLowerCase()}`) } } }), // OTPs pendentes (LGPD)
   ]);
   refresh();
   return ok();
