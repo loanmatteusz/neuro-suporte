@@ -1,8 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-const isProd = process.env.VERCEL_ENV === "production";
-const smtp = isProd ? z.string().min(1) : z.string().optional();
+const requireSmtp = process.env.VERCEL_ENV === "production";
+const smtp = requireSmtp ? z.string().min(1) : z.string().optional();
 
 export const env = createEnv({
   server: {
