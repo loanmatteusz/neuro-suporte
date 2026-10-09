@@ -13,17 +13,22 @@ export function PdfUploader({ value, onChange }: { value: UploadedPdf | null; on
   const [state, setState] = useState<"idle" | "uploading">("idle");
   const [error, setError] = useState<string | null>(null);
 
+  const GENERIC_ERROR = "Não conseguimos enviar o arquivo. Tente de novo.";
+
   async function upload(file: File) {
     setError(null);
     setState("uploading");
     try {
       const res = await requestUpload("pdf", { fileName: file.name, size: file.size, contentType: file.type });
-      if (!res.ok) throw new Error(res.error);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
       const put = await fetch(res.data.url, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
-      if (!put.ok) throw new Error("Não conseguimos enviar o arquivo. Tente de novo.");
+      if (!put.ok) throw new Error(GENERIC_ERROR);
       onChange({ key: res.data.key, name: file.name, size: file.size });
-    } catch (e) {
-      setError((e as Error).message);
+    } catch {
+      setError(GENERIC_ERROR);
     } finally {
       setState("idle");
     }
