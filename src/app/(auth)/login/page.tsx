@@ -6,10 +6,11 @@ import { EmailForm } from "./_components/email-form";
 
 export const metadata: Metadata = { title: "Entrar" };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ email?: string | string[] }> }) {
   const user = await getSessionUser();
   if (user) redirect(user.role === "admin" ? "/admin" : "/course");
-  const [{ email }, settings] = await Promise.all([searchParams, getSiteSettings()]);
+  const [{ email: rawEmail }, settings] = await Promise.all([searchParams, getSiteSettings()]);
+  const email = Array.isArray(rawEmail) ? rawEmail[0] : rawEmail;
   return (
     <>
       <h1 className="text-2xl font-bold">Entrar</h1>

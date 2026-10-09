@@ -4,8 +4,9 @@ import { CodeForm } from "./_components/code-form";
 
 export const metadata: Metadata = { title: "Digite o código" };
 
-export default async function VerifyPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
-  const { email } = await searchParams;
+export default async function VerifyPage({ searchParams }: { searchParams: Promise<{ email?: string | string[] }> }) {
+  const { email: rawEmail } = await searchParams;
+  const email = Array.isArray(rawEmail) ? rawEmail[0] : rawEmail;
   if (!email) redirect("/login");
   return (
     <>

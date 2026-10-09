@@ -1,11 +1,17 @@
 import Link from "next/link";
+import { SiteFooter } from "@/components/brand/site-footer";
+import { getSiteSettings } from "@/data/settings";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const settings = await getSiteSettings();
   return (
-    <main className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-3xl font-extrabold">Página não encontrada</h1>
-      <p className="mt-3 text-muted-foreground">Talvez este conteúdo tenha mudado de lugar.</p>
-      <Link href="/" className="mt-6 inline-flex min-h-12 items-center rounded-xl bg-primary px-6 font-bold text-primary-foreground">Voltar ao início</Link>
-    </main>
+    <>
+      <main className="mx-auto max-w-xl px-4 py-24 text-center">
+        <h1 className="text-3xl font-extrabold">Página não encontrada</h1>
+        <p className="mt-3 text-muted-foreground">Talvez este conteúdo tenha mudado de lugar.</p>
+        <Link href="/" className="mt-6 inline-flex min-h-12 items-center rounded-xl bg-primary px-6 font-bold text-primary-foreground">Voltar ao início</Link>
+      </main>
+      <SiteFooter psychologistName={settings.psychologistName} crp={settings.crp} />
+    </>
   );
 }

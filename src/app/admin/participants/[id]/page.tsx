@@ -6,11 +6,13 @@ import { ProgressBar } from "@/components/course/progress-bar";
 import { getParticipantDetail } from "@/data/participants";
 import { moduleColor } from "@/lib/module-colors";
 import { STATUS_LABEL } from "@/lib/participant-status";
+import { requireAdmin } from "@/lib/session";
 import { ParticipantActions } from "./_components/participant-actions";
 
 const fmt = (d: Date | null) => (d ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(d) : "—");
 
 export default async function ParticipantDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const detail = await getParticipantDetail(id);
   if (!detail) notFound();

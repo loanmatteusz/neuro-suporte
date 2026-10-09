@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/session";
 import { ItemForm } from "../_components/item-form";
 
 export default async function NewItemPage({ searchParams }: { searchParams: Promise<{ moduleId?: string; type?: string }> }) {
+  await requireAdmin();
   const { moduleId, type } = await searchParams;
   if (!moduleId || (type !== "VIDEO" && type !== "DOCUMENT")) notFound();
   const mod = await prisma.module.findUnique({ where: { id: moduleId }, select: { id: true, title: true } }).catch(() => null);

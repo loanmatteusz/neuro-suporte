@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getContentItem } from "@/data/course";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/session";
 import { NotifyButton } from "@/components/admin/notify-button";
 import { ItemForm } from "../_components/item-form";
 import { countActiveParticipants } from "../notify-actions";
@@ -8,6 +9,7 @@ import { countActiveParticipants } from "../notify-actions";
 export const maxDuration = 60; // envio do "Avisar participantes" (Task 16)
 
 export default async function EditItemPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const item = await getContentItem(id);
   if (!item) notFound();

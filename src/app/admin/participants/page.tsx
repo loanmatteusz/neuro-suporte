@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { UserPlus } from "lucide-react";
 import { listParticipants } from "@/data/participants";
+import { requireAdmin } from "@/lib/session";
 import { ParticipantDialog } from "./_components/participant-dialog";
 import { ParticipantsList } from "./_components/participants-list";
 
 export const metadata: Metadata = { title: "Participantes" };
 
 export default async function ParticipantsPage() {
+  await requireAdmin();
   const { rows } = await listParticipants();
   return (
     <div className="space-y-6">

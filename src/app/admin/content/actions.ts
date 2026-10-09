@@ -82,6 +82,7 @@ async function validateItem(input: ContentItemInput): Promise<ValidatedItem> {
   const data = {
     type: v.type,
     title: v.title,
+    // Sem corpo => undefined: o Prisma ignora o campo, então ele nunca é limpo (comportamento mantido).
     body: (v.body ?? undefined) as Prisma.InputJsonValue | undefined,
     youtubeId: v.type === "VIDEO" ? v.youtubeUrl : null,
     pdfKey: v.type === "DOCUMENT" ? (v.pdf?.key ?? null) : null,
@@ -104,8 +105,9 @@ export async function createContentItem(input: ContentItemInput): Promise<Action
 export async function updateContentItem(id: string, input: ContentItemInput): Promise<ActionResult> {
   await requireAdmin();
   if (!idSchema.safeParse(id).success) return fail("Conteúdo inválido.");
-  const current = await prisma.contentItem.findUnique({ where: { id }, select: { pdfKey: true, moduleId: true } });
+  const current = await prisma.contentItem.findUnique({ where: { id }, select: { pdfKey: true, moduleId: true, type: true } });
   if (!current) return fail("Este conteúdo não existe mais.");
+  if (current.type !== input.type) return fail("Não é possível mudar o tipo de um conteúdo existente.");
   const v = await validateItem({ ...input, moduleId: current.moduleId });
   if (v.error) return v.error;
   await prisma.contentItem.update({ where: { id }, data: v.data });

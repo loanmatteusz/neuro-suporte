@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getSiteSettings } from "@/data/settings";
+import { requireAdmin } from "@/lib/session";
 import { SettingsForm } from "./_components/settings-form";
 
 export const metadata: Metadata = { title: "Apresentação" };
 
 export default async function SettingsPage() {
+  await requireAdmin();
   const s = await getSiteSettings();
   return (
     <div className="space-y-6">

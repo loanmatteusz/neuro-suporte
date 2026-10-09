@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/site";
 import { getCourseOutline, toCourseShape, type OutlineModule } from "@/data/course";
 import { participantStatus, type ParticipantStatus } from "@/lib/participant-status";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/session";
 import { aggregateProgress, computeProgress, type CourseProgress, type ProgressAggregate } from "@/lib/progress";
 
 export type ParticipantRow = {
@@ -20,6 +21,7 @@ export type ParticipantRow = {
 const userSelect = { id: true, name: true, email: true, createdAt: true, lastSeenAt: true, inviteSentAt: true, banned: true } as const;
 
 export async function listParticipants(): Promise<{ rows: ParticipantRow[]; aggregate: ProgressAggregate; outline: OutlineModule[] }> {
+  await requireAdmin();
   const [outline, users, completions] = await Promise.all([
     getCourseOutline(),
     prisma.user.findMany({ where: { role: "participant" }, select: userSelect, orderBy: { name: "asc" } }),
@@ -45,6 +47,7 @@ export async function listParticipants(): Promise<{ rows: ParticipantRow[]; aggr
 }
 
 export async function getParticipantDetail(id: string) {
+  await requireAdmin();
   const [user, outline, completions] = await Promise.all([
     prisma.user.findFirst({ where: { id, role: "participant" }, select: userSelect }),
     getCourseOutline(),

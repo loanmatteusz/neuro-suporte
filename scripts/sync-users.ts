@@ -89,7 +89,8 @@ async function main() {
 
     let invited = 0;
     if (args["send-invites"]) {
-      const send = createScriptMailer();
+      const { send, isReal } = createScriptMailer();
+      if (!isReal) console.warn("\n⚠ SMTP não configurado: nenhum convite foi enviado de verdade.");
       const baseUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
       const settings = await prisma.siteSettings.findUnique({ where: { id: 1 }, select: { psychologistName: true } });
       for (const u of diff.create.filter((x) => x.role === "participant" && x.active)) {
@@ -102,6 +103,7 @@ async function main() {
               psychologistName: settings?.psychologistName ?? siteConfig.defaults.psychologistName,
             }),
           });
+          if (!isReal) continue; // só registra convite que de fato saiu
           await prisma.user.update({ where: { email: u.email }, data: { inviteSentAt: new Date() } });
           invited++;
         } catch (e) {

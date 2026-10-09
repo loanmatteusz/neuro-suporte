@@ -35,8 +35,10 @@ export function CompleteButton({ itemId, initialCompleted, completedIds, shape, 
       } else {
         setCelebrate(null);
       }
-      const res = await setItemCompleted(itemId, next);
-      if (!res.ok) {
+      try {
+        const res = await setItemCompleted(itemId, next);
+        if (!res.ok) throw new Error(res.error);
+      } catch {
         setCelebrate(null);
         toast.error("Não conseguimos salvar agora. Tente de novo em instantes.");
       }

@@ -97,7 +97,7 @@ Admin inicial: `loan.matteusz@gmail.com`.
 Tudo roda em planos gratuitos: GitHub, Vercel (Hobby), Neon, Cloudflare R2 e Gmail.
 
 1. **GitHub:** criar um repositório privado e fazer `git push`.
-2. **Neon:** criar o projeto (região São Paulo, `sa-east-1`) e copiar a connection string **pooled** para `DATABASE_URL`. Se o build de produção travar na etapa das migrations, use a connection string direta (não *pooled*) do Neon na `DATABASE_URL` só do build, ou rode `pnpm prisma migrate deploy` do seu computador com ela.
+2. **Neon:** criar o projeto (região São Paulo, `sa-east-1`) e copiar a connection string **pooled** para `DATABASE_URL`. Se o build de produção travar na etapa das migrations, rode `pnpm prisma migrate deploy` do seu computador com a connection string direta (não *pooled*) do Neon.
 3. **Cloudflare R2:** criar o bucket privado `neuro-suporte` (sem acesso público). Em *Manage R2 API Tokens*, criar um token "Object Read & Write" só para esse bucket e usar `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY`. Usar também `S3_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com`, `S3_REGION=auto` e `S3_FORCE_PATH_STYLE=false`. Em *Settings → CORS policy* do bucket:
 
    ```json
@@ -105,7 +105,7 @@ Tudo roda em planos gratuitos: GitHub, Vercel (Hobby), Neon, Cloudflare R2 e Gma
    ```
 
 4. **Gmail:** criar uma conta Gmail do projeto, ativar a verificação em 2 etapas e gerar uma senha em *Senhas de app*. Variáveis: `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<conta>`, `SMTP_PASS=<senha de app, sem espaços>` e `EMAIL_FROM="Neuro Suporte <conta@gmail.com>"`. O limite é de ~500 e-mails por dia.
-5. **Vercel:** *Add New Project* → importar o repositório → em *Environment Variables* cadastrar todas as variáveis nos escopos **Production e Preview** (o build precisa delas; sem elas os previews falham), com `BETTER_AUTH_URL=https://<projeto>.vercel.app` → *Deploy*. As migrations rodam sozinhas no build de produção (o script `scripts/migrate-if-production.mjs` só aplica `prisma migrate deploy` quando `VERCEL_ENV=production`; previews e builds locais não tocam o banco).
+5. **Vercel:** *Add New Project* → importar o repositório → em *Environment Variables* cadastrar todas as variáveis no escopo **Production**, com `BETTER_AUTH_URL=https://<projeto>.vercel.app` → *Deploy*. Os previews não são feitos para uso: no escopo **Preview** cadastre `SKIP_ENV_VALIDATION=1` (ou valores fictícios) para que o build não falhe, sem apontar para o banco e o SMTP de produção. As migrations rodam sozinhas no build de produção (o script `scripts/migrate-if-production.mjs` só aplica `prisma migrate deploy` quando `VERCEL_ENV=production`; previews e builds locais não tocam o banco).
 6. **Primeiro admin:** no seu computador, crie o `data/users.json` com o admin (copie `data/users.example.json` e deixe só a pessoa certa; sem esse arquivo o sync dá "Não consegui ler data/users.json"). Depois `cp .env.example .env.production`, preencha `DATABASE_URL` (Neon), `BETTER_AUTH_URL` e o SMTP, e rode:
 
    ```bash

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Plus } from "lucide-react";
 import { ModuleDialog } from "@/components/admin/module-dialog";
 import { getCourseOutline } from "@/data/course";
+import { requireAdmin } from "@/lib/session";
 import { SortableTree } from "./_components/sortable-tree";
 
 export const metadata: Metadata = { title: "Conteúdo" };
 
 export default async function AdminContentPage() {
+  await requireAdmin();
   const outline = await getCourseOutline();
   return (
     <div className="space-y-6">

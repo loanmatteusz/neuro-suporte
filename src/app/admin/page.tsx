@@ -5,10 +5,12 @@ import { ProgressBar } from "@/components/course/progress-bar";
 import { siteConfig } from "@/config/site";
 import { listParticipants } from "@/data/participants";
 import { moduleColor } from "@/lib/module-colors";
+import { requireAdmin } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Visão geral" };
 
 export default async function AdminOverview() {
+  await requireAdmin();
   const { rows, aggregate, outline } = await listParticipants();
   const inactive = rows.filter((r) => r.status === "inactive");
   const never = rows.filter((r) => r.status === "never");
@@ -18,7 +20,7 @@ export default async function AdminOverview() {
     <div className="space-y-8">
       <h1 className="text-2xl font-extrabold">Visão geral</h1>
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className={card}><p className="text-sm text-muted-foreground">Participantes ativos</p><p className="text-3xl font-extrabold">{aggregate.participants}</p></div>
+        <div className={card}><p className="text-sm text-muted-foreground">Participantes com acesso</p><p className="text-3xl font-extrabold">{aggregate.participants}</p></div>
         <div className={card}><p className="text-sm text-muted-foreground">Conclusão média do curso</p><p className="text-3xl font-extrabold text-primary">{aggregate.averagePercent}%</p></div>
         <div className={card}><p className="text-sm text-muted-foreground">Precisam de atenção</p><p className="text-3xl font-extrabold">{inactive.length + never.length}</p></div>
       </div>

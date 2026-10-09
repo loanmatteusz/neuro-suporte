@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -27,8 +28,13 @@ export function ConfirmDelete({ title, description, onConfirm, trigger, confirmL
             onClick={(e) => {
               e.preventDefault();
               start(async () => {
-                await onConfirm();
-                setOpen(false);
+                try {
+                  await onConfirm();
+                } catch {
+                  toast.error("Não conseguimos concluir agora. Tente de novo em instantes.");
+                } finally {
+                  setOpen(false);
+                }
               });
             }}
           >
