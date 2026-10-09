@@ -20,7 +20,7 @@ function getTransporter() {
 
 export async function sendMail({ to, subject, html, text }: { to: string } & EmailContent): Promise<void> {
   if (!isEmailConfigured()) {
-    if (process.env.NODE_ENV === "production") throw new Error("SMTP não configurado.");
+    if (process.env.VERCEL_ENV === "production") throw new Error("SMTP não configurado.");
     console.info(`\n[email:dev] Para: ${to}\nAssunto: ${subject}\n${text}\n`);
     return;
   }
