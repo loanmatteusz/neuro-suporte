@@ -2,14 +2,14 @@
 
 ## 1. Antes de começar
 
-- [ ] Pasta `assets/` com logo, fotos e imagens disponíveis
+- [x] Pasta `assets/` com logo, fotos e imagens disponíveis
 - [ ] Nome completo e CRP da psicóloga
 - [ ] Foto e texto de apresentação da psicóloga
 - [ ] Links dos vídeos no YouTube (como "não listado")
 - [ ] PDFs dos documentos
-- [ ] Direção visual definida
-- [ ] Recursos extras decididos: certificado, aviso de novo conteúdo, link de WhatsApp
-- [ ] Domínio próprio registrado (necessário para o envio de e-mails pelo Resend)
+- [x] Direção visual definida
+- [x] Recursos extras decididos: certificado, aviso de novo conteúdo, link de WhatsApp
+- [ ] Conta Gmail do projeto com verificação em 2 etapas e senha de app
 - [ ] Lista inicial de participantes (nome + e-mail)
 
 ## 2. Desenvolvimento
@@ -19,7 +19,7 @@
 - [ ] `pnpm dev` roda sem erros no console
 - [ ] `pnpm build` passa sem erros
 - [ ] `pnpm lint` passa
-- [ ] Testes unitários do cálculo de progresso passam
+- [ ] `pnpm test` passa (progresso, YouTube, users.json, db-guard, reorder, validações, e-mails)
 
 ### Autenticação e convites
 - [ ] E-mail convidado recebe o código e consegue entrar
@@ -33,7 +33,7 @@
 - [ ] `data/users.json` está no `.gitignore`, e `data/users.example.json` está versionado
 - [ ] Arquivo inválido (e-mail errado, duplicado, role inválida) gera erro claro e não grava nada
 - [ ] `--dry-run` mostra as alterações sem gravar
-- [ ] Rodar o sync duas vezes não duplica usuários
+- [ ] Rodar o sync duas vezes: a 2ª mostra Criados: 0 · Atualizados: 0
 - [ ] O sync não apaga usuários nem progresso que não estão no arquivo
 - [ ] Banco remoto exige confirmação (ou `--yes`)
 - [ ] `--send-invites` envia convite só para os recém-criados
@@ -48,6 +48,7 @@
 - [ ] Mover conteúdo de um módulo para outro
 - [ ] A nova ordem aparece na área do participante
 - [ ] Pré-visualização mostra o conteúdo como o participante vê
+- [ ] Avisar participantes envia só para ativos e mostra "Avisado em dd/mm"
 
 ### Participante
 - [ ] Todos os módulos e conteúdos liberados desde o primeiro acesso
@@ -59,6 +60,8 @@
 - [ ] Mensagem de encorajamento ao concluir um módulo e o curso
 - [ ] Vídeo responsivo (16:9), usando youtube-nocookie.com
 - [ ] PDF abre e baixa só para quem está logado (sem link público)
+- [ ] No celular, o PDF abre por "Abrir PDF"
+- [ ] URL do PDF copiada expira após 5 minutos
 - [ ] Navegação anterior/próxima e sidebar funcionam
 
 ### Acompanhamento (admin)
@@ -67,6 +70,7 @@
 - [ ] Indicação de participantes inativos
 - [ ] Indicação de quem foi convidado mas ainda não acessou
 - [ ] Visão agregada (total de participantes, médias de conclusão)
+- [ ] Admin não aparece nas estatísticas
 
 ### Privacidade e ética
 - [ ] Nome e CRP da psicóloga visíveis
@@ -86,7 +90,8 @@
 - [ ] Repositório criado no GitHub
 - [ ] Banco criado no Neon
 - [ ] Bucket privado criado no Cloudflare R2, com as chaves de API
-- [ ] Domínio verificado no Resend (DNS)
+- [ ] Senha de app do Gmail configurada (SMTP_*)
+- [ ] CORS do bucket R2 liberando PUT/GET para o domínio da Vercel
 - [ ] Projeto importado na Vercel, com todas as variáveis de ambiente configuradas
 - [ ] Domínio apontado para a Vercel (opcional)
 - [ ] `pnpm prisma migrate deploy` aplicado no banco remoto
@@ -95,7 +100,7 @@
 ## 4. Pós-deploy
 
 - [ ] Login do admin funciona em produção, com e-mail recebido de verdade
-- [ ] Convite de teste chega a um e-mail externo (não só ao dono da conta Resend)
+- [ ] Convite de teste chega a um e-mail externo (Gmail SMTP)
 - [ ] Upload e visualização de PDF funcionam em produção
 - [ ] Vídeos carregam em produção
 - [ ] Teste completo no celular: convite → login → assistir → concluir

@@ -18,7 +18,7 @@
 [x] Task 18: Visão geral e edição da apresentação
 [x] Task 19: Landing, privacidade e conta do participante
 [x] Task 20: Arquivo de usuários e script de sync
-[ ] Task 21: Deploy, documentação e verificação final
+[x] Task 21: Deploy, documentação e verificação final
 
 Notas da Task 1
 - Next 16.4 (docs em node_modules/next/dist/docs): `middleware` deprecated -> usar `src/proxy.ts` com `export function proxy`; `after` e estavel em `next/server`; `revalidateTag(tag, profile)` exige 2o argumento (forma de 1 arg deprecated); `next lint` removido (usar `eslint`); params/searchParams/cookies/headers sao assincronos.
