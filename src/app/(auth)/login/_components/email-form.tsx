@@ -55,7 +55,7 @@ export function EmailForm({ defaultEmail, psychologistName, contactUrl }: { defa
         <div id="email-error" role="alert" className="rounded-xl bg-coral-soft p-3 text-sm text-coral">
           <p>{LOGIN_ERROR_MESSAGES[error].replace("{psychologist}", psychologistName)}</p>
           {showContact && (
-            <a href={contactUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block font-bold underline underline-offset-4">
+            <a href={contactUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center font-bold underline underline-offset-4">
               Falar com {psychologistName}
             </a>
           )}

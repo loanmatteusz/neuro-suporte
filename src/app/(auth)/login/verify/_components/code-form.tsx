@@ -75,7 +75,7 @@ export function CodeForm({ email }: { email: string }) {
         {pending ? "Entrando…" : "Entrar"}
       </Button>
       <div className="flex items-center justify-between text-sm">
-        <Link href={`/login?email=${encodeURIComponent(email)}`} className="underline underline-offset-4">
+        <Link href={`/login?email=${encodeURIComponent(email)}`} className="inline-flex min-h-11 items-center underline underline-offset-4">
           Trocar e-mail
         </Link>
         <button type="button" onClick={resend} disabled={cooldown > 0} className="min-h-11 underline underline-offset-4 disabled:no-underline disabled:opacity-60">
